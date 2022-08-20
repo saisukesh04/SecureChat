@@ -1,9 +1,13 @@
+var socket = io();
+
 $('#file_submit').on('click', function (e) {
     e.preventDefault();
     console.log("Clicked");
 
-    const selectedFile = document.getElementById('image_upload').files[0];
-    console.log(selectedFile);
+    // const selectedFile = document.getElementById('image_upload').files[0];
+    // console.log(selectedFile);
+
+    socket.emit('chat message', "Hi this is Sukesh");
 
     const byteArray = convertToByteArray(selectedFile);
     // console.log(3);
