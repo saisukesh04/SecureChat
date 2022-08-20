@@ -1,13 +1,18 @@
-var socket = io();
+const socket = io("http://127.0.0.1:3000", {
+  transports: ["websocket"],
+  upgrade: false,
+});
+
+socket.on("notify-message", (message) => {
+    console.log("socket message received!" + message);
+});
 
 $('#file_submit').on('click', function (e) {
     e.preventDefault();
     console.log("Clicked");
 
-    // const selectedFile = document.getElementById('image_upload').files[0];
-    // console.log(selectedFile);
-
-    socket.emit('chat message', "Hi this is Sukesh");
+    const selectedFile = document.getElementById('image_upload').files[0];
+    console.log(selectedFile);
 
     const byteArray = convertToByteArray(selectedFile);
     // console.log(3);
@@ -60,6 +65,8 @@ function encodeByteArray(array) {
     console.log("---------- ENCRYPTION ---------");
     AES_Encrypt(block, key);
     console.log(block);
+
+    socket.emit('send-message', block);
 
     console.log("---------- DECRYPTION ---------");
     AES_Decrypt(block, key);
