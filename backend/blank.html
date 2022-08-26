@@ -12,9 +12,15 @@
     <h1>Cryptography Project Backend</h1>
     <input type="submit" value="Hello" onclick="hello()">
 
-    <script src="/socket.io/socket.io.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js"
+      integrity="sha512-PU5S6BA03fRv1Q5fpwXjg5nlRrgdoguZ74urFInkbABMCENyx5oP3hrDzYMMPh3qdLdknIvrGj3yqZ4JuU7Nag=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
     <script>
-        var socket = io("https://secure-chat-crypto-backend.herokuapp.com");
+        // var socket = io("https://secure-chat-crypto-backend.herokuapp.com");
+        var socket = io("http://localhost:3000");
     </script>
 </body>
 

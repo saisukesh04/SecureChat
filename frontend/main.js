@@ -1,22 +1,27 @@
-const socket = io("https://secure-chat-crypto-backend.herokuapp.com", {
-  transports: ["websocket"],
-  upgrade: false,
+// const socket = io("https://secure-chat-crypto-backend.herokuapp.com", {
+const socket = io("http://localhost:3000", {
+    transports: ["websocket"],
+    upgrade: false,
 });
 
 socket.on("notify-message", (message) => {
-    console.log("socket message received!" + message);
+    console.log("socket message received!");
+
+    AES_Init();
+    var key = new Array(32);
+    for (var i = 0; i < 32; i++)
+        key[i] = i;
+
+    AES_ExpandKey(key);
+    AES_Decrypt(message, key);
+    $('#image_output').attr('src', "data:image/png;base64," + btoa(String.fromCharCode.apply(null, new Uint8Array(message))));
 });
 
 $('#file_submit').on('click', function (e) {
     e.preventDefault();
-    console.log("Clicked");
 
     const selectedFile = document.getElementById('image_upload').files[0];
-    console.log(selectedFile);
-
-    const byteArray = convertToByteArray(selectedFile);
-    // console.log(3);
-    // console.log(byteArray);
+    convertToByteArray(selectedFile);
 });
 
 function convertToByteArray(file) {
@@ -25,15 +30,11 @@ function convertToByteArray(file) {
 
     reader.readAsArrayBuffer(file);
     reader.onloadend = function (evt) {
-        console.log(1);
         if (evt.target.readyState == FileReader.DONE) {
-            console.log(2);
-
             var arrayBuffer = evt.target.result, array = new Uint8Array(arrayBuffer);
-            console.log(array.length);
-            for (var i = 0; i < array.length; i++) {
+            for (var i = 0; i < array.length; i++)
                 fileByteArray.push(array[i]);
-            }
+
             $('#image_input').attr('src', "data:image/png;base64," + btoa(String.fromCharCode.apply(null, array)));
         }
         encodeByteArray(fileByteArray);
@@ -41,38 +42,20 @@ function convertToByteArray(file) {
 }
 
 function encodeByteArray(array) {
-    console.log("Starting AES");
     AES_Init();
-
-    console.log("---------- ARRAY ---------");
-    console.log(array);
 
     var block = new Array(array.length);
     for (var i = 0; i < array.length; i++)
         block[i] = array[i];
 
-    console.log("---------- BLOCK ---------");
-    console.log(block);
-
     var key = new Array(32);
     for (var i = 0; i < 32; i++)
         key[i] = i;
 
-    console.log("---------- KEY ---------");
-    console.log(key);
-
     AES_ExpandKey(key);
-    console.log("---------- ENCRYPTION ---------");
     AES_Encrypt(block, key);
-    console.log(block);
 
     socket.emit('send-message', block);
-
-    console.log("---------- DECRYPTION ---------");
-    AES_Decrypt(block, key);
-    console.log(block);
-
-    $('#image_output').attr('src', "data:image/png;base64," + btoa(String.fromCharCode.apply(null, new Uint8Array(block))));
 
     AES_Done();
 }
