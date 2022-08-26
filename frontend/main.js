@@ -1,5 +1,5 @@
-// const socket = io("https://secure-chat-crypto-backend.herokuapp.com", {
-const socket = io("http://localhost:3000", {
+const socket = io("https://secure-chat-crypto-backend.herokuapp.com", {
+// const socket = io("http://localhost:3000", {
     transports: ["websocket"],
     upgrade: false,
 });
